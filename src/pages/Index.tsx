@@ -6,16 +6,17 @@ import { LiveStreamCard } from "@/components/LiveStreamCard";
 import { ProductCard } from "@/components/ProductCard";
 import { AIShoppingAgent } from "@/components/AIShoppingAgent";
 import { LiveChat } from "@/components/LiveChat";
+import { CreateLivestreamModal } from "@/components/CreateLivestreamModal";
 import { 
   Play, 
   Sparkles, 
   TrendingUp, 
   Zap, 
   Users, 
-  ArrowRight,
-  ChevronRight 
+  ChevronRight,
+  Video,
+  Plus
 } from "lucide-react";
-import heroBanner from "@/assets/hero-banner.jpg";
 
 // Sample data
 const liveStreams = [
@@ -55,9 +56,28 @@ const liveStreams = [
     host: "Interior Magic",
     viewers: 3421,
     thumbnail: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=400&fit=crop",
-    isLive: false,
-    duration: "45:23",
+    isLive: true,
     discount: 35,
+    category: "Home",
+  },
+  {
+    id: 5,
+    title: "Sneaker Drop - Limited Edition",
+    host: "SneakerHead HQ",
+    viewers: 9876,
+    thumbnail: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&h=400&fit=crop",
+    isLive: true,
+    discount: 40,
+    category: "Fashion",
+  },
+  {
+    id: 6,
+    title: "Kitchen Gadgets That Actually Work",
+    host: "Chef's Corner",
+    viewers: 4532,
+    thumbnail: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&h=400&fit=crop",
+    isLive: true,
+    discount: 55,
     category: "Home",
   },
 ];
@@ -111,125 +131,114 @@ const trendingDeals = [
 
 const Index = () => {
   const [isAgentOpen, setIsAgentOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-background">
       <Header onOpenAgent={() => setIsAgentOpen(true)} />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={heroBanner}
-            alt="Live Shopping"
-            className="h-full w-full object-cover opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-        </div>
-
-        <div className="container relative mx-auto px-4 py-16 md:py-24">
-          <div className="max-w-2xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/20 px-4 py-1.5 text-sm text-primary"
+      {/* Live Shopping Hero - Primary Focus */}
+      <section className="relative overflow-hidden border-b border-border bg-gradient-to-b from-secondary/50 to-background">
+        <div className="container mx-auto px-4 py-6">
+          {/* Header with Go Live Button */}
+          <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative flex h-4 w-4 items-center justify-center">
+                <span className="absolute h-full w-full animate-ping rounded-full bg-live opacity-75" />
+                <span className="h-3 w-3 rounded-full bg-live" />
+              </div>
+              <div>
+                <h1 className="font-display text-2xl font-bold text-foreground md:text-3xl">
+                  Live Shopping
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  {liveStreams.filter(s => s.isLive).length} streams live now • {liveStreams.reduce((acc, s) => acc + s.viewers, 0).toLocaleString()} shoppers watching
+                </p>
+              </div>
+            </div>
+            <Button 
+              variant="deal" 
+              size="lg" 
+              onClick={() => setIsCreateOpen(true)}
+              className="w-full sm:w-auto"
             >
-              <Zap className="h-4 w-4" />
-              AI-Powered Deal Finding
-            </motion.div>
+              <Plus className="h-5 w-5" />
+              Go Live & Sell
+            </Button>
+          </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="mb-6 font-display text-4xl font-bold leading-tight text-foreground md:text-6xl"
-            >
-              Shop Smarter with
-              <span className="text-gradient-deal"> AI Agents</span> That Know
-              Your Style
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="mb-8 text-lg text-muted-foreground"
-            >
-              Your personal AI shopping assistant finds the best deals from live
-              streams and e-commerce, tailored to your unique taste.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-wrap gap-4"
-            >
-              <Button variant="deal" size="xl" onClick={() => setIsAgentOpen(true)}>
-                <Sparkles className="h-5 w-5" />
-                Start AI Shopping
-              </Button>
-              <Button variant="glass" size="xl">
-                <Play className="h-5 w-5" />
-                Watch Live
-              </Button>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="mt-12 flex flex-wrap gap-8"
-            >
-              {[
-                { label: "Active Shoppers", value: "2.4M+", icon: Users },
-                { label: "Deals Found", value: "500K+", icon: TrendingUp },
-                { label: "Avg. Savings", value: "47%", icon: Zap },
-              ].map((stat) => (
-                <div key={stat.label} className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary">
-                    <stat.icon className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-display text-xl font-bold text-foreground">
-                      {stat.value}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{stat.label}</p>
-                  </div>
+          {/* Featured Stream + Live Grid */}
+          <div className="grid gap-6 lg:grid-cols-3">
+            {/* Featured Stream */}
+            <div className="lg:col-span-2">
+              <div className="relative aspect-video overflow-hidden rounded-2xl border border-border bg-card">
+                <img
+                  src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=675&fit=crop"
+                  alt="Featured Stream"
+                  className="h-full w-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent" />
+                
+                {/* Live badge */}
+                <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-live px-3 py-1.5 text-sm font-semibold text-foreground animate-pulse-deal">
+                  <span className="h-2 w-2 rounded-full bg-foreground" />
+                  LIVE
                 </div>
-              ))}
-            </motion.div>
+
+                {/* Viewers */}
+                <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1.5 text-sm text-foreground backdrop-blur-sm">
+                  <Users className="h-4 w-4" />
+                  15.2K watching
+                </div>
+
+                {/* Play overlay */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <button className="flex h-20 w-20 items-center justify-center rounded-full gradient-deal shadow-deal transition-transform hover:scale-110">
+                    <Play className="h-8 w-8 fill-deal-foreground text-deal-foreground" />
+                  </button>
+                </div>
+
+                {/* Stream info */}
+                <div className="absolute bottom-4 left-4 right-4">
+                  <div className="mb-2 inline-block rounded-full bg-primary/20 px-3 py-1 text-xs font-medium text-primary">
+                    Fashion • Up to 80% OFF
+                  </div>
+                  <h3 className="mb-1 font-display text-xl font-bold text-foreground md:text-2xl">
+                    Luxury Accessories Mega Sale - Live Now!
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    by Fashion Forward
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Live Chat */}
+            <div className="lg:col-span-1">
+              <LiveChat className="h-full min-h-[400px]" />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Live Now Section */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="mb-8 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-3 w-3 items-center justify-center">
-              <span className="h-full w-full animate-ping rounded-full bg-live opacity-75" />
-              <span className="absolute h-2 w-2 rounded-full bg-live" />
-            </div>
-            <h2 className="font-display text-2xl font-bold text-foreground">
-              Live Now
-            </h2>
-          </div>
+      {/* More Live Streams */}
+      <section className="container mx-auto px-4 py-8">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="font-display text-xl font-bold text-foreground">
+            More Live Streams
+          </h2>
           <Button variant="ghost" className="text-muted-foreground">
             View All <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {liveStreams.map((stream, i) => (
             <motion.div
               key={stream.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
+              transition={{ duration: 0.3, delay: i * 0.05 }}
             >
               <LiveStreamCard {...stream} />
             </motion.div>
@@ -237,19 +246,50 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Start Your Stream CTA */}
+      <section className="container mx-auto px-4 py-6">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-r from-primary/10 via-secondary to-ai/10 p-6 md:p-8">
+          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+          <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-ai/10 blur-3xl" />
+          
+          <div className="relative flex flex-col items-center gap-6 md:flex-row md:justify-between">
+            <div className="text-center md:text-left">
+              <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-primary/20 px-3 py-1 text-sm text-primary">
+                <Video className="h-4 w-4" />
+                Become a Seller
+              </div>
+              <h3 className="mb-2 font-display text-2xl font-bold text-foreground">
+                Start Your Own Livestream
+              </h3>
+              <p className="max-w-md text-muted-foreground">
+                Join thousands of sellers reaching millions of shoppers. Go live and start selling in minutes.
+              </p>
+            </div>
+            <Button 
+              variant="deal" 
+              size="xl" 
+              onClick={() => setIsCreateOpen(true)}
+            >
+              <Plus className="h-5 w-5" />
+              Create Livestream
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* AI Picks Section */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="mb-8 flex items-center justify-between">
+      <section className="container mx-auto px-4 py-8">
+        <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg gradient-ai shadow-ai">
               <Sparkles className="h-4 w-4 text-ai-foreground" />
             </div>
             <div>
-              <h2 className="font-display text-2xl font-bold text-foreground">
+              <h2 className="font-display text-xl font-bold text-foreground">
                 AI Picks For You
               </h2>
               <p className="text-sm text-muted-foreground">
-                Based on your shopping preferences
+                Deals matched to your taste
               </p>
             </div>
           </div>
@@ -258,13 +298,13 @@ const Index = () => {
           </Button>
         </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {trendingDeals.map((deal, i) => (
             <motion.div
               key={deal.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
+              transition={{ duration: 0.3, delay: i * 0.05 }}
             >
               <ProductCard {...deal} />
             </motion.div>
@@ -272,85 +312,28 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Stream with Chat */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="mb-8">
-          <h2 className="font-display text-2xl font-bold text-foreground">
-            Featured Stream
-          </h2>
-          <p className="text-muted-foreground">
-            Join thousands watching live deals unfold
-          </p>
-        </div>
-
-        <div className="grid gap-6 lg:grid-cols-3">
-          {/* Video Player */}
-          <div className="lg:col-span-2">
-            <div className="relative aspect-video overflow-hidden rounded-2xl glass">
-              <img
-                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=675&fit=crop"
-                alt="Featured Stream"
-                className="h-full w-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-              
-              {/* Live badge */}
-              <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-live px-3 py-1.5 text-sm font-semibold text-foreground animate-pulse-deal">
-                <span className="h-2 w-2 rounded-full bg-foreground" />
-                LIVE
+      {/* Stats Bar */}
+      <section className="border-t border-border bg-secondary/30 py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16">
+            {[
+              { label: "Active Shoppers", value: "2.4M+", icon: Users },
+              { label: "Live Sellers", value: "12K+", icon: Video },
+              { label: "Deals Today", value: "500K+", icon: TrendingUp },
+              { label: "Avg. Savings", value: "47%", icon: Zap },
+            ].map((stat) => (
+              <div key={stat.label} className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary">
+                  <stat.icon className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-display text-xl font-bold text-foreground">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                </div>
               </div>
-
-              {/* Viewers */}
-              <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-background/80 px-3 py-1.5 text-sm text-foreground backdrop-blur-sm">
-                <Users className="h-4 w-4" />
-                15.2K watching
-              </div>
-
-              {/* Play overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <button className="flex h-20 w-20 items-center justify-center rounded-full gradient-deal shadow-deal transition-transform hover:scale-110">
-                  <Play className="h-8 w-8 fill-deal-foreground text-deal-foreground" />
-                </button>
-              </div>
-
-              {/* Stream info */}
-              <div className="absolute bottom-4 left-4 right-4">
-                <h3 className="mb-1 font-display text-xl font-bold text-foreground">
-                  Luxury Accessories Mega Sale - Live Now!
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Fashion Forward • Up to 80% Off Designer Items
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Live Chat */}
-          <div className="lg:col-span-1">
-            <LiveChat className="h-full" />
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="relative overflow-hidden rounded-3xl gradient-hero p-8 md:p-12">
-          <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-primary/20 blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-ai/20 blur-3xl" />
-
-          <div className="relative text-center">
-            <h2 className="mb-4 font-display text-3xl font-bold text-foreground md:text-4xl">
-              Ready to Shop Smarter?
-            </h2>
-            <p className="mx-auto mb-8 max-w-xl text-muted-foreground">
-              Let your personal AI agent find incredible deals tailored to your
-              style. Start saving today!
-            </p>
-            <Button variant="deal" size="xl" onClick={() => setIsAgentOpen(true)}>
-              <Sparkles className="h-5 w-5" />
-              Launch AI Agent
-              <ArrowRight className="h-5 w-5" />
-            </Button>
+            ))}
           </div>
         </div>
       </section>
@@ -380,6 +363,12 @@ const Index = () => {
           <AIShoppingAgent isOpen={isAgentOpen} onClose={() => setIsAgentOpen(false)} />
         )}
       </AnimatePresence>
+
+      {/* Create Livestream Modal */}
+      <CreateLivestreamModal 
+        isOpen={isCreateOpen} 
+        onClose={() => setIsCreateOpen(false)} 
+      />
 
       {/* Floating AI Button (Mobile) */}
       <button
